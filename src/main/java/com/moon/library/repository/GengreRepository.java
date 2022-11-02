@@ -1,0 +1,10 @@
+package com.moon.library.repository;
+
+import com.moon.library.model.Genre;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface GengreRepository extends JpaRepository<Genre, Long> {
+
+}
