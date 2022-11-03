@@ -16,4 +16,6 @@ public interface ProductService {
     void delete(Product t);
 
     void deleteById(long id);
+
+    List<Product> findAllProductsByParam(String name, String author, String publisher);
 }

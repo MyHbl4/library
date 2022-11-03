@@ -1,21 +1,27 @@
 package com.moon.library.service.impl;
 
+import com.moon.library.error.NotFoundException;
+import com.moon.library.error.ValidationException;
 import com.moon.library.model.Genre;
 import com.moon.library.repository.GengreRepository;
 import com.moon.library.service.GenreService;
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class GenreServiceImpl implements GenreService {
 
-    @Autowired
-    private GengreRepository gengreRepository;
+    private final GengreRepository gengreRepository;
 
     @Override
     public Genre save(Genre genre) {
-        return gengreRepository.save(genre);
+        try {
+            return gengreRepository.save(genre);
+        } catch (Exception e) {
+            throw new ValidationException("400 Bad Request");
+        }
     }
 
     @Override
@@ -25,21 +31,34 @@ public class GenreServiceImpl implements GenreService {
 
     @Override
     public Genre findById(long id) {
-        return gengreRepository.findById(id).orElse(null);
+        return gengreRepository.findById(id)
+            .orElseThrow(() -> new NotFoundException("404 NotFound"));
     }
 
     @Override
     public Genre update(Genre genre) {
-        return gengreRepository.save(genre);
+        Genre oldEntity = findById(genre.getId());
+        oldEntity.setName(genre.getName());
+        return save(oldEntity);
     }
 
     @Override
     public void delete(Genre genre) {
-        gengreRepository.delete(genre);
+        findById(genre.getId());
+        try {
+            gengreRepository.delete(genre);
+        } catch (Exception e) {
+            throw new ValidationException("400 Bad Request");
+        }
     }
 
     @Override
     public void deleteById(long id) {
-        gengreRepository.deleteById(id);
+        findById(id);
+        try {
+            gengreRepository.deleteById(id);
+        } catch (Exception e) {
+            throw new ValidationException("400 Bad Request");
+        }
     }
 }

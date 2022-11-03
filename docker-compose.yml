@@ -1,0 +1,22 @@
+version: '3.5'
+services:
+  datab:
+    image: 'oscarfonts/h2:alpine'
+    restart: always
+    container_name: datab
+    environment:
+      - POSTGRES_DB=library
+      - POSTGRES_USER=sa
+      - POSTGRES_HOST_AUTH_METHOD=trust
+
+  educational_website:
+    container_name: library_website
+    restart: on-failure
+    build: ./
+    ports:
+      - "8080:8080"
+    depends_on:
+      - datab
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:h2:mem:library;
+      - SPRING_DATASOURCE_USERNAME=sa

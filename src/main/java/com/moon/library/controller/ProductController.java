@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -23,18 +24,18 @@ public class ProductController {
 
     private final ProductService productService;
 
-    @GetMapping(path="/{id}")
+    @GetMapping(path = "/{id}")
     public Product findById(@PathVariable(name = "id") long id) {
         return productService.findById(id);
     }
 
     @GetMapping
-    public List<Product> findAll(){
+    public List<Product> findAll() {
         return productService.findAll();
     }
 
     @PostMapping
-    public Product save(Product product){
+    public Product save(Product product) {
         return productService.save(product);
     }
 
@@ -46,5 +47,14 @@ public class ProductController {
     @DeleteMapping(path = "/{id}")
     public void delete(@PathVariable(name = "id") long id) {
         productService.deleteById(id);
+    }
+
+    @GetMapping(path = "/search-by-param")
+    public List<Product> findAllProductsByParam(
+        @RequestParam(value = "name", required = false) String name,
+        @RequestParam(value = "author.name", required = false) String author,
+        @RequestParam(value = "publisher.name", required = false) String publisher) {
+        log.info("findAllProductsByParam - find all products by param");
+        return productService.findAllProductsByParam(name, author, publisher);
     }
 }
